@@ -1,7 +1,6 @@
 package com.tenpo.challenge.service.auth;
 
 import com.tenpo.challenge.repository.UserJpaRepository;
-import com.tenpo.challenge.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

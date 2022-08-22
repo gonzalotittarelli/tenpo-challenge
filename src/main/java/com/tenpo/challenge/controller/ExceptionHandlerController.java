@@ -1,13 +1,12 @@
 package com.tenpo.challenge.controller;
 
 import com.tenpo.challenge.controller.dto.response.ApiError;
+import com.tenpo.challenge.exception.PercentageNotFoundException;
 import com.tenpo.challenge.exception.UserAlreadyExistsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -53,6 +52,20 @@ public class ExceptionHandlerController {
         ex);
     return ApiError.builder()
         .status(HttpStatus.BAD_REQUEST)
+        .message(ex.getLocalizedMessage())
+        .build();
+  }
+  @ExceptionHandler(PercentageNotFoundException.class)
+  @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+  public ApiError handlePercentageNotFoundException(HttpServletRequest req, Exception ex) {
+    log.error(
+        "PERCENTAGE NOT FOUND: {}, uri {}, message {}",
+        ex.getClass().getSimpleName(),
+        req.getRequestURI(),
+        ex.getMessage(),
+        ex);
+    return ApiError.builder()
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .message(ex.getLocalizedMessage())
         .build();
   }

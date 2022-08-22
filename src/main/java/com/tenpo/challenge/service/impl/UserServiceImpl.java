@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -28,7 +27,8 @@ public class UserServiceImpl implements UserService {
   @Autowired private final JWTTokenServiceImpl jwtTokenService;
 
   @Override
-  public User create(User user) {
+  @Transactional
+  public User save(User user) {
     checkUserExistence(user);
     UserJpaEntity userJpaEntity = userJpaRepository.save(map(user));
     return map(userJpaEntity);

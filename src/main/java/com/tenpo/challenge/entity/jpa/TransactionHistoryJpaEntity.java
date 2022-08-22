@@ -19,11 +19,13 @@ public class TransactionHistoryJpaEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(nullable = false)
   private String endpoint;
 
+  @Column(nullable = false)
   private String status;
 
-  private String response;
-
-  @CreationTimestamp private LocalDateTime createdAt;
+  @CreationTimestamp
+  @Column(nullable = false)
+  private LocalDateTime createdAt;
 }

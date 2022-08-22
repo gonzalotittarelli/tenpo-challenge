@@ -1,7 +1,9 @@
 package com.tenpo.challenge.controller;
 
+import com.tenpo.challenge.annotation.TrackOperation;
 import com.tenpo.challenge.controller.dto.request.UserLoginRequestDTO;
 import com.tenpo.challenge.controller.dto.request.UserRequestDTO;
+import com.tenpo.challenge.controller.dto.response.TokenResponseDTO;
 import com.tenpo.challenge.controller.dto.response.UserResponseDTO;
 import com.tenpo.challenge.entity.model.User;
 import com.tenpo.challenge.service.AuthService;
@@ -23,18 +25,22 @@ public class UserController {
   @Autowired private final UserService userService;
   @Autowired private final AuthService authService;
 
+  @TrackOperation(endpoint = "/user/signup")
   @PostMapping("/signup")
   public ResponseEntity<UserResponseDTO> signup(@Valid @RequestBody UserRequestDTO userRequestDTO) {
-    User user = this.userService.create(map(userRequestDTO));
+    User user = this.userService.save(map(userRequestDTO));
     return ResponseEntity.ok(map(user));
   }
 
+  @TrackOperation(endpoint = "/user/login")
   @PostMapping("/login")
-  public ResponseEntity<String> login(@Valid @RequestBody UserLoginRequestDTO userLoginRequestDTO) {
+  public ResponseEntity<TokenResponseDTO> login(
+      @Valid @RequestBody UserLoginRequestDTO userLoginRequestDTO) {
     String token = authService.login(map(userLoginRequestDTO));
-    return ResponseEntity.ok(token);
+    return ResponseEntity.ok(TokenResponseDTO.builder().accessToken(token).build());
   }
 
+  @TrackOperation(endpoint = "/user/logout")
   @GetMapping("/logout")
   public ResponseEntity<Void> logout(@RequestHeader(AUTHORIZATION) String token) {
     authService.logout(token);

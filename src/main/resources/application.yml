@@ -1,0 +1,82 @@
+spring:
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    format-sql: false
+    jdbc:
+      time_zone: UTC
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  sql:
+    init:
+      platform: postgres
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/tenpo_challenge'
+    username: postgres
+    password: password
+  main:
+    banner-mode: 'off'
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    default-property-inclusion: non_null
+
+logging:
+  level:
+    org:
+      springframework: INFO
+
+jwt:
+  secret: secret
+  jwtExpiration: 300
+
+tenpo:
+  rest:
+    client:
+      get-percent:
+        baseUrl: 'https://www.randomnumberapi.com/api/v1.0/random?min=1&max=100'
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
+    ratelimiters:
+      enabled: false
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      percentageService:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        failureRateThreshold: 30
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        waitDurationInOpenState: 5s
+        slidingWindowType: COUNT_BASED
+  retry:
+    instances:
+      percentageService:
+        maxAttempts: 3
+        waitDuration: 15s
+  ratelimiter:
+    instances:
+      percentageService:
+        registerHealthIndicator: false
+        limitForPeriod: 1
+        limitRefreshPeriod: 1800s
+        timeoutDuration: 0

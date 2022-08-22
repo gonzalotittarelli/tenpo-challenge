@@ -25,7 +25,7 @@ public class JWTTokenServiceImpl {
   private String secretKey;
 
   @Value("${jwt.jwtExpiration}")
-  private int tokenExpiration;
+  private long tokenExpiration;
 
   public String getJWTToken(Authentication authentication) {
     UserJpaEntity user = (UserJpaEntity) authentication.getPrincipal();
@@ -33,7 +33,7 @@ public class JWTTokenServiceImpl {
     return JWT.create()
         .withSubject(user.getUsername())
         .withIssuedAt(new Date(start))
-        .withExpiresAt(new Date(start + this.tokenExpiration))
+        .withExpiresAt(new Date(start + (this.tokenExpiration * 60 * 1000)))
         .withClaim(
             "roles",
             user.getAuthorities().stream()
