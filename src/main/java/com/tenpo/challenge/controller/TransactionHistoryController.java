@@ -1,5 +1,6 @@
 package com.tenpo.challenge.controller;
 
+import com.tenpo.challenge.adapter.mapper.model.TransactionHistoryMapper;
 import com.tenpo.challenge.annotation.TrackOperation;
 import com.tenpo.challenge.controller.dto.response.TransactionHistoryResponseDTO;
 import com.tenpo.challenge.entity.model.TransactionHistory;
@@ -42,18 +43,6 @@ public class TransactionHistoryController {
       @RequestParam(defaultValue = DEFAULT_SIZE) Integer size,
       @RequestParam(defaultValue = DEFAULT_SORT) String sortBy) {
     List<TransactionHistory> histories = transactionHistoryService.findAll(page, size, sortBy);
-    return ResponseEntity.ok(map(histories));
-  }
-
-  private List<TransactionHistoryResponseDTO> map(List<TransactionHistory> histories) {
-    return histories.stream().map(this::map).toList();
-  }
-
-  private TransactionHistoryResponseDTO map(TransactionHistory history) {
-    return TransactionHistoryResponseDTO.builder()
-        .status(history.getStatus())
-        .endpoint(history.getEndpoint())
-        .createdAt(history.getCreatedAt())
-        .build();
+    return ResponseEntity.ok(TransactionHistoryMapper.map(histories));
   }
 }

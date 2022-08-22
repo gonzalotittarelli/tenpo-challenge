@@ -11,20 +11,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-  private static final String ERROR_MSG = "Bad credentials";
+  private static final String ERROR_BAD_CREDENTIALS = "Bad credentials";
   @Autowired private final AuthenticationManager authenticationManager;
-
-  @Resource(name = "userDetailsServiceImpl")
-  private final UserDetailsService userDetailsService;
 
   @Autowired private JWTTokenServiceImpl jwtTokenServiceImpl;
 
@@ -38,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
       SecurityContextHolder.getContext().setAuthentication(authentication);
       return this.jwtTokenServiceImpl.getJWTToken(authentication);
     } catch (AuthenticationException e) {
-      throw new BadCredentialsException(ERROR_MSG);
+      throw new BadCredentialsException(ERROR_BAD_CREDENTIALS);
     }
   }
 

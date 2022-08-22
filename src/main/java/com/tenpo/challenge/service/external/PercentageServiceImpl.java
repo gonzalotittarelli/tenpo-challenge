@@ -36,7 +36,7 @@ public class PercentageServiceImpl implements PercentageService {
   public int getRandomPercentage() {
     Object response = restTemplate.getForObject(baseUrl, Object.class);
     List<Integer> result =
-        Optional.of((List<Integer>) response)
+        Optional.ofNullable((List<Integer>) response)
             .orElseThrow(() -> new PercentageNotFoundException(ERROR_PERCENTAGE_NOT_FOUND));
     if (!result.isEmpty()) {
       lastValue = Optional.of(result.get(0));

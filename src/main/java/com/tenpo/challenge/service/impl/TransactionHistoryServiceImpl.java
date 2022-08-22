@@ -1,5 +1,7 @@
 package com.tenpo.challenge.service.impl;
 
+import com.tenpo.challenge.adapter.mapper.jpa.TransactionHistoryJpaMapper;
+import com.tenpo.challenge.adapter.mapper.model.TransactionHistoryMapper;
 import com.tenpo.challenge.entity.jpa.TransactionHistoryJpaEntity;
 import com.tenpo.challenge.entity.model.TransactionHistory;
 import com.tenpo.challenge.repository.TransactionHistoryJpaRepository;
@@ -26,7 +28,7 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
   @Override
   @Transactional
   public void save(TransactionHistory transactionHistory) {
-    transactionHistoryJpaRepository.save(map(transactionHistory));
+    transactionHistoryJpaRepository.save(TransactionHistoryMapper.map(transactionHistory));
   }
 
   @Override
@@ -34,22 +36,7 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
     Pageable paging = PageRequest.of(page, size, Sort.by(sortBy));
     Page<TransactionHistoryJpaEntity> pageResult = transactionHistoryJpaRepository.findAll(paging);
     return pageResult.hasContent()
-        ? pageResult.getContent().stream().map(this::map).toList()
+        ? pageResult.getContent().stream().map(TransactionHistoryJpaMapper::map).toList()
         : List.of();
-  }
-
-  private TransactionHistoryJpaEntity map(TransactionHistory transactionHistory) {
-    return TransactionHistoryJpaEntity.builder()
-        .endpoint(transactionHistory.getEndpoint())
-        .status(transactionHistory.getStatus())
-        .build();
-  }
-
-  private TransactionHistory map(TransactionHistoryJpaEntity transactionHistory) {
-    return TransactionHistory.builder()
-        .endpoint(transactionHistory.getEndpoint())
-        .status(transactionHistory.getStatus())
-        .createdAt(transactionHistory.getCreatedAt())
-        .build();
   }
 }

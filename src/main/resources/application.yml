@@ -48,7 +48,6 @@ resilience4j:
   circuitbreaker:
     instances:
       percentageService:
-        registerHealthIndicator: true
         eventConsumerBufferSize: 10
         automaticTransitionFromOpenToHalfOpenEnabled: true
         failureRateThreshold: 30
@@ -65,7 +64,6 @@ resilience4j:
   ratelimiter:
     instances:
       percentageService:
-        registerHealthIndicator: false
         limitForPeriod: 1
         limitRefreshPeriod: 1800s
         timeoutDuration: 0

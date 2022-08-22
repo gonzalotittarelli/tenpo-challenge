@@ -1,5 +1,8 @@
 package com.tenpo.challenge.controller;
 
+import com.tenpo.challenge.adapter.mapper.dto.UserLoginRequestDTOMapper;
+import com.tenpo.challenge.adapter.mapper.model.UserMapper;
+import com.tenpo.challenge.adapter.mapper.dto.UserRequestDTOMapper;
 import com.tenpo.challenge.annotation.TrackOperation;
 import com.tenpo.challenge.controller.dto.request.UserLoginRequestDTO;
 import com.tenpo.challenge.controller.dto.request.UserRequestDTO;
@@ -37,8 +40,8 @@ public class UserController {
       })
   @PostMapping("/signup")
   public ResponseEntity<UserResponseDTO> signup(@Valid @RequestBody UserRequestDTO userRequestDTO) {
-    User user = this.userService.save(map(userRequestDTO));
-    return ResponseEntity.ok(map(user));
+    User user = this.userService.save(UserRequestDTOMapper.map(userRequestDTO));
+    return ResponseEntity.ok(UserMapper.map(user));
   }
 
   @TrackOperation(endpoint = "/user/login")
@@ -51,7 +54,7 @@ public class UserController {
   @PostMapping("/login")
   public ResponseEntity<TokenResponseDTO> login(
       @Valid @RequestBody UserLoginRequestDTO userLoginRequestDTO) {
-    String token = authService.login(map(userLoginRequestDTO));
+    String token = authService.login(UserLoginRequestDTOMapper.map(userLoginRequestDTO));
     return ResponseEntity.ok(TokenResponseDTO.builder().accessToken(token).build());
   }
 
@@ -65,28 +68,5 @@ public class UserController {
   public ResponseEntity<Void> logout(@RequestHeader(AUTHORIZATION) String token) {
     authService.logout(token);
     return ResponseEntity.ok().build();
-  }
-
-  private User map(UserLoginRequestDTO userLoginRequestDTO) {
-    return User.builder()
-        .username(userLoginRequestDTO.getUsername())
-        .password(userLoginRequestDTO.getPassword())
-        .build();
-  }
-
-  private User map(UserRequestDTO userRequestDTO) {
-    return User.builder()
-        .username(userRequestDTO.getUsername())
-        .password(userRequestDTO.getPassword())
-        .email(userRequestDTO.getEmail())
-        .build();
-  }
-
-  private UserResponseDTO map(User user) {
-    return UserResponseDTO.builder()
-        .id(user.getId())
-        .username(user.getUsername())
-        .email(user.getEmail())
-        .build();
   }
 }
