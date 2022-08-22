@@ -4,15 +4,17 @@ import com.tenpo.challenge.annotation.TrackOperation;
 import com.tenpo.challenge.controller.dto.response.TransactionHistoryResponseDTO;
 import com.tenpo.challenge.entity.model.TransactionHistory;
 import com.tenpo.challenge.service.TransactionHistoryService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,8 +28,16 @@ public class TransactionHistoryController {
   @Autowired private final TransactionHistoryService transactionHistoryService;
 
   @TrackOperation(endpoint = "/history")
+  @ApiOperation(
+      value = "Transaction histories",
+      notes = "Gets transaction histories with pagination")
+  @ApiResponses(
+      value = {
+        @ApiResponse(code = 200, message = "Transaction histories"),
+      })
   @GetMapping
   public ResponseEntity<List<TransactionHistoryResponseDTO>> findAll(
+      @RequestHeader(AUTHORIZATION) String token,
       @RequestParam(defaultValue = DEFAULT_PAGE) Integer page,
       @RequestParam(defaultValue = DEFAULT_SIZE) Integer size,
       @RequestParam(defaultValue = DEFAULT_SORT) String sortBy) {

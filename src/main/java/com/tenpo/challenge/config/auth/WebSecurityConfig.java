@@ -1,4 +1,4 @@
-package com.tenpo.challenge.config;
+package com.tenpo.challenge.config.auth;
 
 import com.tenpo.challenge.entity.jpa.UserRole;
 import com.tenpo.challenge.filter.AuthTokenFilter;
@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -30,12 +31,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Autowired private final AuthEntryPointJWT authEntryPointJWT;
   @Autowired private final JWTTokenServiceImpl jwtTokenService;
   private static final String[] ENDPOINTS_WITHOUT_AUTH = {
+    "/v3/api-docs/**",
+    "/swagger-ui/**",
     "/v2/api-docs",
-    "/configuration/ui",
+    "/swagger-resources",
     "/swagger-resources/**",
+    "/configuration/ui",
     "/configuration/security",
     "/swagger-ui.html",
-    "/webjars/**",
+    "/webjars/**"
   };
   private static final String ENDPOINT_USER = "/user/**";
 
@@ -50,6 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
+    SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     http.csrf()
         .disable()
         .exceptionHandling()
@@ -59,16 +64,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeRequests()
-        .antMatchers(ENDPOINT_USER)
-        .permitAll()
         .antMatchers(ENDPOINTS_AUTH)
         .hasAnyAuthority(UserRole.USER.name())
-        .anyRequest()
-        .authenticated()
         .and()
         .addFilterBefore(
             new AuthTokenFilter(this.jwtTokenService, this.userDetailsServiceImpl),
-            BasicAuthenticationFilter.class);
+            BasicAuthenticationFilter.class)
+        .authorizeRequests()
+        .antMatchers(ENDPOINT_USER)
+        .permitAll()
+        .antMatchers(ENDPOINTS_WITHOUT_AUTH)
+        .permitAll();
   }
 
   @Override

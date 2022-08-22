@@ -1,4 +1,4 @@
-package com.tenpo.challenge.config;
+package com.tenpo.challenge.config.auth;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;

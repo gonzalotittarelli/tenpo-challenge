@@ -28,9 +28,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class AuthTokenFilter extends OncePerRequestFilter {
 
-  private static final String LOGIN = "/user/login";
+  private static final String HISTORY = "/history";
 
-  private static final String SIGNUP = "/user/signup";
+  private static final String LOGOUT = "/user/logout";
+
+  private static final String ADD = "/calculator/add";
 
   @Autowired private final JWTTokenServiceImpl jwtTokenService;
 
@@ -42,9 +44,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
 
     String url = request.getRequestURL().toString();
-    if (url.contains(LOGIN) || url.contains(SIGNUP)) {
-      filterChain.doFilter(request, response);
-    } else {
+    if (url.contains(HISTORY) || url.contains(LOGOUT) || url.contains(ADD)) {
       String token = request.getHeader(AUTHORIZATION);
       try {
         String username = this.jwtTokenService.getUsernameFromToken(token);
@@ -58,6 +58,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), error);
       }
+    } else {
+      filterChain.doFilter(request, response);
     }
   }
 

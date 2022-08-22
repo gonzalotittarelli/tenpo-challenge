@@ -8,6 +8,9 @@ import com.tenpo.challenge.controller.dto.response.UserResponseDTO;
 import com.tenpo.challenge.entity.model.User;
 import com.tenpo.challenge.service.AuthService;
 import com.tenpo.challenge.service.UserService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,12 @@ public class UserController {
   @Autowired private final AuthService authService;
 
   @TrackOperation(endpoint = "/user/signup")
+  @ApiOperation(value = "Signup users", notes = "Register a user")
+  @ApiResponses(
+      value = {
+        @ApiResponse(code = 200, message = "Successfully register"),
+        @ApiResponse(code = 400, message = "Bad request - User already exists")
+      })
   @PostMapping("/signup")
   public ResponseEntity<UserResponseDTO> signup(@Valid @RequestBody UserRequestDTO userRequestDTO) {
     User user = this.userService.save(map(userRequestDTO));
@@ -33,6 +42,12 @@ public class UserController {
   }
 
   @TrackOperation(endpoint = "/user/login")
+  @ApiOperation(value = "Login users", notes = "Login a user with username and password")
+  @ApiResponses(
+      value = {
+        @ApiResponse(code = 200, message = "Successfully login with token"),
+        @ApiResponse(code = 401, message = "Unauthorized")
+      })
   @PostMapping("/login")
   public ResponseEntity<TokenResponseDTO> login(
       @Valid @RequestBody UserLoginRequestDTO userLoginRequestDTO) {
@@ -41,6 +56,11 @@ public class UserController {
   }
 
   @TrackOperation(endpoint = "/user/logout")
+  @ApiOperation(value = "Logout users", notes = "Logout a user with given token")
+  @ApiResponses(
+      value = {
+        @ApiResponse(code = 200, message = "Successfully logout - token expire"),
+      })
   @GetMapping("/logout")
   public ResponseEntity<Void> logout(@RequestHeader(AUTHORIZATION) String token) {
     authService.logout(token);

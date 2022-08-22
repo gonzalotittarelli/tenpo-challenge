@@ -6,6 +6,7 @@ import com.tenpo.challenge.exception.UserAlreadyExistsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -55,6 +56,7 @@ public class ExceptionHandlerController {
         .message(ex.getLocalizedMessage())
         .build();
   }
+
   @ExceptionHandler(PercentageNotFoundException.class)
   @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
   public ApiError handlePercentageNotFoundException(HttpServletRequest req, Exception ex) {
