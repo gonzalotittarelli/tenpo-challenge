@@ -19,6 +19,7 @@
         <java.jwt.version>4.0.0</java.jwt.version>
         <jackson.databind.version>2.13.3</jackson.databind.version>
         <io.springfox.version>3.0.0</io.springfox.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
         <dependency>
@@ -123,6 +124,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>tenpo-challenge</finalName>
     </build>
 
 </project>

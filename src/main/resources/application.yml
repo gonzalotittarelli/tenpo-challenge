@@ -2,7 +2,7 @@ spring:
   jpa:
     generate-ddl: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
     format-sql: false
     jdbc:
@@ -17,7 +17,7 @@ spring:
     init:
       platform: postgres
   datasource:
-    url: 'jdbc:postgresql://localhost:5432/tenpo_challenge'
+    url: 'jdbc:postgresql://postgres:5432/tenpo_challenge'
     username: postgres
     password: password
   main:
