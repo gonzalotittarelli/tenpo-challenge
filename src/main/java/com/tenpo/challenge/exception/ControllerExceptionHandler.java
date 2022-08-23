@@ -1,12 +1,8 @@
-package com.tenpo.challenge.controller;
+package com.tenpo.challenge.exception;
 
-import com.tenpo.challenge.controller.dto.response.ApiError;
-import com.tenpo.challenge.exception.PercentageNotFoundException;
-import com.tenpo.challenge.exception.UserAlreadyExistsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,7 +17,7 @@ import java.util.List;
 
 @RestControllerAdvice
 @Slf4j
-public class ExceptionHandlerController {
+public class ControllerExceptionHandler {
 
   @ExceptionHandler({
     HttpRequestMethodNotSupportedException.class,
@@ -36,10 +32,7 @@ public class ExceptionHandlerController {
         req.getRequestURI(),
         ex.getMessage(),
         ex);
-    return ApiError.builder()
-        .status(HttpStatus.BAD_REQUEST)
-        .message(ex.getLocalizedMessage())
-        .build();
+    return getError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
   }
 
   @ExceptionHandler(UserAlreadyExistsException.class)
@@ -51,10 +44,7 @@ public class ExceptionHandlerController {
         req.getRequestURI(),
         ex.getMessage(),
         ex);
-    return ApiError.builder()
-        .status(HttpStatus.BAD_REQUEST)
-        .message(ex.getLocalizedMessage())
-        .build();
+    return getError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
   }
 
   @ExceptionHandler(PercentageNotFoundException.class)
@@ -66,10 +56,7 @@ public class ExceptionHandlerController {
         req.getRequestURI(),
         ex.getMessage(),
         ex);
-    return ApiError.builder()
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .message(ex.getLocalizedMessage())
-        .build();
+    return getError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage());
   }
 
   @ExceptionHandler(AuthenticationException.class)
@@ -81,10 +68,7 @@ public class ExceptionHandlerController {
         req.getRequestURI(),
         ex.getMessage(),
         ex);
-    return ApiError.builder()
-        .status(HttpStatus.BAD_REQUEST)
-        .message(ex.getLocalizedMessage())
-        .build();
+    return getError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
   }
 
   @ExceptionHandler(Exception.class)
@@ -96,10 +80,7 @@ public class ExceptionHandlerController {
         req.getRequestURI(),
         ex.getMessage(),
         ex);
-    return ApiError.builder()
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .message("The request could not be processed")
-        .build();
+    return getError(HttpStatus.INTERNAL_SERVER_ERROR, "The request could not be processed");
   }
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -113,10 +94,14 @@ public class ExceptionHandlerController {
               errors.add(error.getDefaultMessage());
             });
     log.error(String.join(",", errors), ex);
-    return ApiError.builder()
-        .status(HttpStatus.BAD_REQUEST)
-        .message("Validation failed for arguments")
-        .errors(errors)
-        .build();
+    return getError(HttpStatus.BAD_REQUEST, "Validation failed for arguments", errors);
+  }
+
+  private ApiError getError(HttpStatus status, String message) {
+    return new ApiError(status, message);
+  }
+
+  private ApiError getError(HttpStatus status, String message, List<String> errors) {
+    return new ApiError(status, message, errors);
   }
 }

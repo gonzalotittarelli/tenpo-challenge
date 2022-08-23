@@ -36,7 +36,7 @@ logging:
 
 jwt:
   secret: secret
-  jwtExpiration: 300
+  expiration: 300
 
 tenpo:
   rest:
@@ -59,11 +59,11 @@ resilience4j:
   retry:
     instances:
       percentageService:
-        maxAttempts: 3
+        maxAttempts: 3 #3 retry
         waitDuration: 15s
   ratelimiter:
     instances:
       percentageService:
         limitForPeriod: 1
-        limitRefreshPeriod: 1800s
+        limitRefreshPeriod: 1800s #30 minutes
         timeoutDuration: 0

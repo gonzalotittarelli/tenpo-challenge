@@ -1,7 +1,7 @@
 package com.tenpo.challenge.service.impl;
 
 import com.tenpo.challenge.service.CalculatorService;
-import com.tenpo.challenge.service.PercentageService;
+import com.tenpo.challenge.service.external.PercentageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -18,6 +18,7 @@
         <spring-cloud.version>2021.0.3</spring-cloud.version>
         <java.jwt.version>4.0.0</java.jwt.version>
         <jackson.databind.version>2.13.3</jackson.databind.version>
+        <io.springfox.version>3.0.0</io.springfox.version>
     </properties>
     <dependencies>
         <dependency>
@@ -77,17 +78,17 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>3.0.0</version>
+            <version>${io.springfox.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>3.0.0</version>
+            <version>${io.springfox.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-boot-starter</artifactId>
-            <version>3.0.0</version>
+            <version>${io.springfox.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

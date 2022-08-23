@@ -19,13 +19,14 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class JWTTokenServiceImpl {
-  private static final Map<String, List<String>> JWTTokenBlacklistMap = new ConcurrentHashMap<>();
+
+  private static final Map<String, List<String>> JWTTokenInvalids = new ConcurrentHashMap<>();
 
   @Value("${jwt.secret}")
-  private String secretKey;
+  private String secret;
 
-  @Value("${jwt.jwtExpiration}")
-  private long tokenExpiration;
+  @Value("${jwt.expiration}")
+  private long expiration;
 
   public String getJWTToken(Authentication authentication) {
     UserJpaEntity user = (UserJpaEntity) authentication.getPrincipal();
@@ -33,17 +34,17 @@ public class JWTTokenServiceImpl {
     return JWT.create()
         .withSubject(user.getUsername())
         .withIssuedAt(new Date(start))
-        .withExpiresAt(new Date(start + (this.tokenExpiration * 60 * 1000)))
+        .withExpiresAt(new Date(start + (this.expiration * 60 * 1000)))
         .withClaim(
             "roles",
             user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList()))
-        .sign(Algorithm.HMAC256(this.secretKey.getBytes()));
+        .sign(Algorithm.HMAC256(this.secret.getBytes()));
   }
 
   public String getUsernameFromToken(String token) {
-    Algorithm algorithm = Algorithm.HMAC256(this.secretKey.getBytes());
+    Algorithm algorithm = Algorithm.HMAC256(this.secret.getBytes());
     JWTVerifier verifier = JWT.require(algorithm).build();
     DecodedJWT decodedJWT = verifier.verify(token);
     return decodedJWT.getSubject();
@@ -55,11 +56,10 @@ public class JWTTokenServiceImpl {
   }
 
   private boolean isValidToken(String username, String token) {
-    boolean isBlacklistedToken =
-        JWTTokenBlacklistMap.containsKey(username)
-            && JWTTokenBlacklistMap.get(username).contains(token);
+    boolean isInInvalidListedToken =
+        JWTTokenInvalids.containsKey(username) && JWTTokenInvalids.get(username).contains(token);
 
-    return !this.isTokenExpired(token) && !isBlacklistedToken;
+    return !this.isTokenExpired(token) && !isInInvalidListedToken;
   }
 
   private boolean isTokenExpired(String token) {
@@ -70,9 +70,9 @@ public class JWTTokenServiceImpl {
   public void invalidateUserToken(String token) {
     String username = this.getUsernameFromToken(token);
 
-    JWTTokenBlacklistMap.putIfAbsent(username, new ArrayList<>());
+    JWTTokenInvalids.putIfAbsent(username, new ArrayList<>());
 
-    JWTTokenBlacklistMap.computeIfPresent(
+    JWTTokenInvalids.computeIfPresent(
         username,
         (key, currentList) -> {
           currentList.add(token);

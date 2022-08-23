@@ -1,4 +1,4 @@
-package com.tenpo.challenge.service;
+package com.tenpo.challenge.service.external;
 
 public interface PercentageService {
 

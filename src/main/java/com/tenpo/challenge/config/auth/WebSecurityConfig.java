@@ -5,7 +5,6 @@ import com.tenpo.challenge.filter.AuthTokenFilter;
 import com.tenpo.challenge.service.auth.JWTTokenServiceImpl;
 import com.tenpo.challenge.service.auth.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +21,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 @Configuration
 @EnableWebSecurity
-@Slf4j
 @RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -39,10 +37,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     "/configuration/ui",
     "/configuration/security",
     "/swagger-ui.html",
-    "/webjars/**"
+    "/webjars/**",
+    "/user/**"
   };
-  private static final String ENDPOINT_USER = "/user/**";
-
   private static final String[] ENDPOINTS_AUTH = {
     "/calculator/add/**", "/history/**", "/user/logout/**"
   };
@@ -71,8 +68,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             new AuthTokenFilter(this.jwtTokenService, this.userDetailsServiceImpl),
             BasicAuthenticationFilter.class)
         .authorizeRequests()
-        .antMatchers(ENDPOINT_USER)
-        .permitAll()
         .antMatchers(ENDPOINTS_WITHOUT_AUTH)
         .permitAll();
   }

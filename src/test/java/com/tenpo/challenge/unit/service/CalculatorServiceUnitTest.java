@@ -1,7 +1,7 @@
 package com.tenpo.challenge.unit.service;
 
 import com.tenpo.challenge.mocks.DefaultValues;
-import com.tenpo.challenge.service.PercentageService;
+import com.tenpo.challenge.service.external.PercentageService;
 import com.tenpo.challenge.service.impl.CalculatorServiceImpl;
 import com.tenpo.challenge.unit.BaseUnitTest;
 import org.junit.jupiter.api.Test;

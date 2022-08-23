@@ -1,24 +1,43 @@
-# Calculator: Challenge Tenpo
+# Calculator
 
-# Spring Boot App
+# Challenge Tenpo
 
-## Main
+## Stack tecnológico
 
-The main class for this app is Application, where Spring context is initialized.
+- Java 17
+- Spring Boot
+- Postgresql
+- Spring security
+- Resilience4j
+- Lombok
+- Swagger
+- JUnit y Mockito
 
 ## Error Handling
 
-We also provide basic handling for exceptions in ControllerExceptionHandler class.
+Se proporciona un handling para las exceptions en la clase ExceptionHandlerController.
 
-## Api Documentation
+## Despliegue
 
-### Swagger
+A continuación se detallan los pasos para el despliegue del servicio:
 
-This project uses Springfox to automate the generation of machine and human readable specifications for JSON APIs
-written using Spring. 
+- paso 1
+- paso 2
 
-URL to access swagger documentation: http://localhost:8080/swagger-ui/
+## Utilización
 
-### Postman Collection
+### Documentación
 
-URL to access postman collection: https://www.postman.com/collections/56baebdb61f5dd04ad9d
+#### Swagger
+
+Este proyecto utiliza swagger para automatizar la generación de la documentación asi como también la prueba.
+Para acceder ingrese a: http://localhost:8080/swagger-ui/
+
+#### Postman Collection
+
+También se proporciona una [postman collection](https://www.postman.com/collections/56baebdb61f5dd04ad9d) para realizar
+las pruebas correspondientes.
+
+## [Imagen docker](https://hub.docker.com)
+
+
